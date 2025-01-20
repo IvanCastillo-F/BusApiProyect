@@ -1,6 +1,0 @@
-@BusApiProyect.Api_HostAddress = http://localhost:5073
-
-GET {{BusApiProyect.Api_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
