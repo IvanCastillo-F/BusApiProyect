@@ -1,4 +1,5 @@
-﻿using BusApiProyect.Data.Models;
+﻿using BusApiProyect.Data.Interfaces;
+using BusApiProyect.Data.Models;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -6,8 +7,8 @@ namespace BusApiProyect.Data.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly UserContext _context;
-        public UserRepository(UserContext context)
+        private readonly DBContext _context;
+        public UserRepository(DBContext context)
         {
             _context = context;
         }

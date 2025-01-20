@@ -1,30 +1,31 @@
 ﻿using BusApiProyect.Data.Interfaces;
 using BusApiProyect.Data.Models;
-using Microsoft.AspNetCore.Http;
+using BusApiProyect.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BusApiProyect.Api.Controllers
 {
-    [Route("api/user")]
+    [Route("api/bus")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class BusController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
-        private readonly ILogger<UserController> _logger;
+        private readonly IBusRepository _busRepository;
+        private readonly ILogger<BusController> _logger;
 
-        public UserController(IUserRepository userRepository, ILogger<UserController> logger)
+        public BusController(IBusRepository busRepository, ILogger<BusController> logger)
         {
-            _userRepository = userRepository;
+            _busRepository = busRepository;
             _logger = logger;
         }
 
+
         [HttpPost]
-        public async Task<IActionResult> AddUser(User user)
+        public async Task<IActionResult> AddBus(Bus bus)
         {
             try
             {
-                var createdUser = await _userRepository.CreateUserAsync(user);
-                return CreatedAtAction(nameof(AddUser), createdUser);
+                var createdBus = await _busRepository.CreateBusAsync(bus);
+                return CreatedAtAction(nameof(AddBus), createdBus);
             }
             catch (Exception ex)
             {
@@ -35,12 +36,12 @@ namespace BusApiProyect.Api.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> UpdateUser(User userToUpdate)
+        public async Task<IActionResult> UpdateBus(Bus busToUpdate)
         {
             try
             {
-                var existingUser = await _userRepository.GetUsersByIdAsyc(userToUpdate.Id);
-                if (existingUser == null)
+                var existingBus = await _busRepository.GetBusByIdAsyc(busToUpdate.Id);
+                if (existingBus == null)
                 {
                     return NotFound(new
                     {
@@ -48,10 +49,10 @@ namespace BusApiProyect.Api.Controllers
                         message = "Record Not Found"
                     });
                 }
-                existingUser.Name = userToUpdate.Name;
-                existingUser.Email = userToUpdate.Email;
-                existingUser.Password = userToUpdate.Password;
-                await _userRepository.UpdateUserAsync(existingUser);
+                existingBus.BusNumber = busToUpdate.BusNumber;
+                existingBus.Capacity = busToUpdate.Capacity;
+                existingBus.CurrentStatus = busToUpdate.CurrentStatus;
+                await _busRepository.UpdateBusAsync(existingBus);
                 return NoContent();
             }
             catch (Exception ex)
@@ -65,13 +66,14 @@ namespace BusApiProyect.Api.Controllers
             }
         }
 
+
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteBus(int id)
         {
             try
             {
-                var existingUser = await _userRepository.GetUsersByIdAsyc(id);
-                if (existingUser == null)
+                var existingBus = await _busRepository.GetBusByIdAsyc(id);
+                if (existingBus == null)
                 {
                     return NotFound(new
                     {
@@ -79,7 +81,7 @@ namespace BusApiProyect.Api.Controllers
                         message = "Record Not Found"
                     });
                 }
-                await _userRepository.DeleteUserAsync(existingUser);
+                await _busRepository.DeleteBusAsync(existingBus);
                 return NoContent();
             }
             catch (Exception ex)
@@ -94,12 +96,12 @@ namespace BusApiProyect.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUsers(int id)
+        public async Task<IActionResult> GetBuses(int id)
         {
             try
             {
-                var existingUser = await _userRepository.GetUsersByIdAsyc(id);
-                if (existingUser == null)
+                var existingBus = await _busRepository.GetBusByIdAsyc(id);
+                if (existingBus == null)
                 {
                     return NotFound(new
                     {
@@ -107,7 +109,7 @@ namespace BusApiProyect.Api.Controllers
                         message = "Record Not Found"
                     });
                 }
-                return Ok(existingUser);
+                return Ok(existingBus);
             }
             catch (Exception ex)
             {
@@ -125,8 +127,8 @@ namespace BusApiProyect.Api.Controllers
         {
             try
             {
-                var users = await _userRepository.GetAllUsersAsyc();
-                return Ok(users);
+                var buses = await _busRepository.GetAllBusesAsyc();
+                return Ok(buses);
             }
             catch (Exception ex)
             {

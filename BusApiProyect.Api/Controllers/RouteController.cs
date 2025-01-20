@@ -1,30 +1,31 @@
 ﻿using BusApiProyect.Data.Interfaces;
 using BusApiProyect.Data.Models;
-using Microsoft.AspNetCore.Http;
+using BusApiProyect.Data.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BusApiProyect.Api.Controllers
 {
-    [Route("api/user")]
+    [Route("api/route")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class RouteController : ControllerBase
     {
-        private readonly IUserRepository _userRepository;
-        private readonly ILogger<UserController> _logger;
 
-        public UserController(IUserRepository userRepository, ILogger<UserController> logger)
+        private readonly IRouteRepository _routeRepository;
+        private readonly ILogger<RouteController> _logger;
+
+        public RouteController(IRouteRepository routeRepository, ILogger<RouteController> logger)
         {
-            _userRepository = userRepository;
+            _routeRepository = routeRepository;
             _logger = logger;
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddUser(User user)
+        public async Task<IActionResult> AddRoute(Data.Models.Route route)
         {
             try
             {
-                var createdUser = await _userRepository.CreateUserAsync(user);
-                return CreatedAtAction(nameof(AddUser), createdUser);
+                var createdRoute = await _routeRepository.CreateRouteAsync(route);
+                return CreatedAtAction(nameof(AddRoute), createdRoute);
             }
             catch (Exception ex)
             {
@@ -33,14 +34,13 @@ namespace BusApiProyect.Api.Controllers
             }
         }
 
-
         [HttpPut]
-        public async Task<IActionResult> UpdateUser(User userToUpdate)
+        public async Task<IActionResult> UpdateRoute(Data.Models.Route routeToUpdate)
         {
             try
             {
-                var existingUser = await _userRepository.GetUsersByIdAsyc(userToUpdate.Id);
-                if (existingUser == null)
+                var existingRoute = await _routeRepository.GetRouteByIdAsyc(routeToUpdate.Id);
+                if (existingRoute == null)
                 {
                     return NotFound(new
                     {
@@ -48,10 +48,14 @@ namespace BusApiProyect.Api.Controllers
                         message = "Record Not Found"
                     });
                 }
-                existingUser.Name = userToUpdate.Name;
-                existingUser.Email = userToUpdate.Email;
-                existingUser.Password = userToUpdate.Password;
-                await _userRepository.UpdateUserAsync(existingUser);
+                existingRoute.Origin = routeToUpdate.Origin;
+                existingRoute.Origin_Latitude = routeToUpdate.Origin_Latitude;
+                existingRoute.Origin_Longitude = routeToUpdate.Origin_Longitude;
+                existingRoute.Destination = routeToUpdate.Destination;
+                existingRoute.Destination_Latitude = routeToUpdate.Destination_Latitude;
+                existingRoute.Destination_Longitude = routeToUpdate.Destination_Longitude;
+                existingRoute.Distance = routeToUpdate.Distance;
+                await _routeRepository.UpdateRouteAsync(existingRoute);
                 return NoContent();
             }
             catch (Exception ex)
@@ -66,12 +70,12 @@ namespace BusApiProyect.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteRoute(int id)
         {
             try
             {
-                var existingUser = await _userRepository.GetUsersByIdAsyc(id);
-                if (existingUser == null)
+                var existingRoute = await _routeRepository.GetRouteByIdAsyc(id);
+                if (existingRoute == null)
                 {
                     return NotFound(new
                     {
@@ -79,7 +83,7 @@ namespace BusApiProyect.Api.Controllers
                         message = "Record Not Found"
                     });
                 }
-                await _userRepository.DeleteUserAsync(existingUser);
+                await _routeRepository.DeleteRouteAsync(existingRoute);
                 return NoContent();
             }
             catch (Exception ex)
@@ -94,12 +98,12 @@ namespace BusApiProyect.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUsers(int id)
+        public async Task<IActionResult> GetRoutes(int id)
         {
             try
             {
-                var existingUser = await _userRepository.GetUsersByIdAsyc(id);
-                if (existingUser == null)
+                var existingRoute = await _routeRepository.GetRouteByIdAsyc(id);
+                if (existingRoute == null)
                 {
                     return NotFound(new
                     {
@@ -107,7 +111,7 @@ namespace BusApiProyect.Api.Controllers
                         message = "Record Not Found"
                     });
                 }
-                return Ok(existingUser);
+                return Ok(existingRoute);
             }
             catch (Exception ex)
             {
@@ -121,12 +125,12 @@ namespace BusApiProyect.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetRoutes()
         {
             try
             {
-                var users = await _userRepository.GetAllUsersAsyc();
-                return Ok(users);
+                var routes = await _routeRepository.GetAllRoutesAsyc();
+                return Ok(routes);
             }
             catch (Exception ex)
             {

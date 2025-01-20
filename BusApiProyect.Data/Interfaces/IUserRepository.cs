@@ -1,6 +1,6 @@
 ﻿using BusApiProyect.Data.Models;
 
-namespace BusApiProyect.Data.Repositories
+namespace BusApiProyect.Data.Interfaces
 {
     public interface IUserRepository
     {

@@ -9,19 +9,19 @@ namespace BusApiProyect.Data.Models
     public class User
     {
         [Key]
-        public int _id { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "Name is required.")]
-        public string _name { get; set; }
+        public string Name { get; set; }
 
         [Required(ErrorMessage = "Email is required.")]
-        public string _email { get; set; }
+        public string Email { get; set; }
 
         [Required(ErrorMessage = "Password is required.")]
-        public string _password { get; set; }
+        public string Password { get; set; }
 
         [DefaultValue(false)]
-        public Boolean _is_admin { get; set; }
+        public Boolean IsAdmin { get; set; }
 
     }
 }
