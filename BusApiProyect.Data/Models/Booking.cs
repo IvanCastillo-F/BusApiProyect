@@ -21,7 +21,7 @@ namespace BusApiProyect.Data.Models
 
         [Required]
         public int ScheduleForBookingId  { get; set;}
-        public Bus_Schedule ScheduleForBooking { get; set; }
+        public BusSchedule ScheduleForBooking { get; set; }
 
         [Required]
         public int SeatsBooked { get; set; }

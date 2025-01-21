@@ -19,13 +19,23 @@ namespace BusApiProyect.Data.Models
 
         public DbSet<Route> Routes { get; set; }
 
-        public DbSet<Bus_Schedule> Schedules { get; set; }
+        public DbSet<BusSchedule> Schedules { get; set; }
 
         public DbSet<Booking> Bookings { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseMySQL(_connectionstring);
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Ensure unique schedules for a bus
+            modelBuilder.Entity<BusSchedule>()
+                .HasIndex(b => new { b.Id, b.DepartureTime, b.Arrival_Time })
+                .IsUnique();
         }
     }
 }

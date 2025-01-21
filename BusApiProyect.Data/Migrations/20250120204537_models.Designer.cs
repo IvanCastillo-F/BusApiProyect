@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BusApiProyect.Data.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20250120181134_correctionsB")]
-    partial class correctionsB
+    [Migration("20250120204537_models")]
+    partial class models
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,7 +69,7 @@ namespace BusApiProyect.Data.Migrations
                     b.ToTable("Bus");
                 });
 
-            modelBuilder.Entity("BusApiProyect.Data.Models.Bus_Schedule", b =>
+            modelBuilder.Entity("BusApiProyect.Data.Models.BusSchedule", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -78,7 +78,7 @@ namespace BusApiProyect.Data.Migrations
                     b.Property<DateTime>("Arrival_Time")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("BusScheduleId")
+                    b.Property<int>("BusForScheduleId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("DepartureTime")
@@ -89,11 +89,14 @@ namespace BusApiProyect.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BusScheduleId");
+                    b.HasIndex("BusForScheduleId");
 
                     b.HasIndex("RouteScheduledId");
 
-                    b.ToTable("Bus_Schedule");
+                    b.HasIndex("Id", "DepartureTime", "Arrival_Time")
+                        .IsUnique();
+
+                    b.ToTable("BusSchedule");
                 });
 
             modelBuilder.Entity("BusApiProyect.Data.Models.Route", b =>
@@ -158,7 +161,7 @@ namespace BusApiProyect.Data.Migrations
 
             modelBuilder.Entity("BusApiProyect.Data.Models.Booking", b =>
                 {
-                    b.HasOne("BusApiProyect.Data.Models.Bus_Schedule", "ScheduleForBooking")
+                    b.HasOne("BusApiProyect.Data.Models.BusSchedule", "ScheduleForBooking")
                         .WithMany()
                         .HasForeignKey("ScheduleForBookingId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -175,11 +178,11 @@ namespace BusApiProyect.Data.Migrations
                     b.Navigation("UserForBooking");
                 });
 
-            modelBuilder.Entity("BusApiProyect.Data.Models.Bus_Schedule", b =>
+            modelBuilder.Entity("BusApiProyect.Data.Models.BusSchedule", b =>
                 {
-                    b.HasOne("BusApiProyect.Data.Models.Bus", "BusSchedule")
+                    b.HasOne("BusApiProyect.Data.Models.Bus", "BusForSchedule")
                         .WithMany()
-                        .HasForeignKey("BusScheduleId")
+                        .HasForeignKey("BusForScheduleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -189,7 +192,7 @@ namespace BusApiProyect.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("BusSchedule");
+                    b.Navigation("BusForSchedule");
 
                     b.Navigation("RouteScheduled");
                 });

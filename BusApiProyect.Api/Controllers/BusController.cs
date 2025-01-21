@@ -123,7 +123,7 @@ namespace BusApiProyect.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetBuses()
         {
             try
             {

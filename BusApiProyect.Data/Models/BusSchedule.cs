@@ -4,15 +4,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BusApiProyect.Data.Models
 {
-    [Table("Bus_Schedule")]
-    public class Bus_Schedule
+    [Table("BusSchedule")]
+    public class BusSchedule
     {
         [Key]
         public int Id { get; set; }
 
         [Required]
-        public int BusScheduleId { get; set; }
-        public Bus BusSchedule { get; set; }
+        public int BusForScheduleId { get; set; }
+        public Bus BusForSchedule { get; set; }
 
 
         [Required]

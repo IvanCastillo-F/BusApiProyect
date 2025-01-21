@@ -7,7 +7,7 @@ using MySql.EntityFrameworkCore.Metadata;
 namespace BusApiProyect.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class correctionsB : Migration
+    public partial class models : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -69,27 +69,27 @@ namespace BusApiProyect.Data.Migrations
                 .Annotation("MySQL:Charset", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "Bus_Schedule",
+                name: "BusSchedule",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    BusScheduleId = table.Column<int>(type: "int", nullable: false),
+                    BusForScheduleId = table.Column<int>(type: "int", nullable: false),
                     RouteScheduledId = table.Column<int>(type: "int", nullable: false),
                     DepartureTime = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     Arrival_Time = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Bus_Schedule", x => x.Id);
+                    table.PrimaryKey("PK_BusSchedule", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Bus_Schedule_Bus_BusScheduleId",
-                        column: x => x.BusScheduleId,
+                        name: "FK_BusSchedule_Bus_BusForScheduleId",
+                        column: x => x.BusForScheduleId,
                         principalTable: "Bus",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Bus_Schedule_Route_RouteScheduledId",
+                        name: "FK_BusSchedule_Route_RouteScheduledId",
                         column: x => x.RouteScheduledId,
                         principalTable: "Route",
                         principalColumn: "Id",
@@ -112,9 +112,9 @@ namespace BusApiProyect.Data.Migrations
                 {
                     table.PrimaryKey("PK_Booking", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Booking_Bus_Schedule_ScheduleForBookingId",
+                        name: "FK_Booking_BusSchedule_ScheduleForBookingId",
                         column: x => x.ScheduleForBookingId,
-                        principalTable: "Bus_Schedule",
+                        principalTable: "BusSchedule",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -137,13 +137,19 @@ namespace BusApiProyect.Data.Migrations
                 column: "UserForBookingId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bus_Schedule_BusScheduleId",
-                table: "Bus_Schedule",
-                column: "BusScheduleId");
+                name: "IX_BusSchedule_BusForScheduleId",
+                table: "BusSchedule",
+                column: "BusForScheduleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bus_Schedule_RouteScheduledId",
-                table: "Bus_Schedule",
+                name: "IX_BusSchedule_Id_DepartureTime_Arrival_Time",
+                table: "BusSchedule",
+                columns: new[] { "Id", "DepartureTime", "Arrival_Time" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_BusSchedule_RouteScheduledId",
+                table: "BusSchedule",
                 column: "RouteScheduledId");
         }
 
@@ -154,7 +160,7 @@ namespace BusApiProyect.Data.Migrations
                 name: "Booking");
 
             migrationBuilder.DropTable(
-                name: "Bus_Schedule");
+                name: "BusSchedule");
 
             migrationBuilder.DropTable(
                 name: "User");
