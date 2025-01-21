@@ -9,5 +9,7 @@ namespace BusApiProyect.Data.Interfaces
         Task<IEnumerable<Bus>> GetAllBusesAsyc();
         Task<Bus> GetBusByIdAsyc(int id);
         Task UpdateBusAsync(Bus bus);
+        Task<bool> IsBusNumberDuplicateAsync(int busNumber);
+        Task<bool> IsBusNumberDuplicateForOtherBusAsync(int busNumber, int busId);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using BusApiProyect.Data.Interfaces;
 using BusApiProyect.Data.Models;
 using BusApiProyect.Data.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BusApiProyect.Api.Controllers
@@ -18,12 +19,24 @@ namespace BusApiProyect.Api.Controllers
             _logger = logger;
         }
 
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddBus(Bus bus)
         {
             try
             {
+                // Check if the bus number already exists
+                var isDuplicate = await _busRepository.IsBusNumberDuplicateAsync(bus.BusNumber);
+                if (isDuplicate)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        message = "A bus with this number already exists."
+                    });
+                }
+
+                // Create the bus if no duplicate is found
                 var createdBus = await _busRepository.CreateBusAsync(bus);
                 return CreatedAtAction(nameof(AddBus), createdBus);
             }
@@ -34,12 +47,13 @@ namespace BusApiProyect.Api.Controllers
             }
         }
 
-
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateBus(Bus busToUpdate)
         {
             try
             {
+                // Check if the bus exists
                 var existingBus = await _busRepository.GetBusByIdAsyc(busToUpdate.Id);
                 if (existingBus == null)
                 {
@@ -49,6 +63,19 @@ namespace BusApiProyect.Api.Controllers
                         message = "Record Not Found"
                     });
                 }
+
+                // Check if the new bus number belongs to another bus
+                var isDuplicate = await _busRepository.IsBusNumberDuplicateForOtherBusAsync(busToUpdate.BusNumber, busToUpdate.Id);
+                if (isDuplicate)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        message = "A bus with this number already exists."
+                    });
+                }
+
+                // Update the bus details
                 existingBus.BusNumber = busToUpdate.BusNumber;
                 existingBus.Capacity = busToUpdate.Capacity;
                 existingBus.CurrentStatus = busToUpdate.CurrentStatus;
@@ -61,12 +88,13 @@ namespace BusApiProyect.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     StatusCode = 500,
-                    message = "Record Not Found"
+                    message = "An unexpected error occurred."
                 });
             }
         }
 
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBus(int id)
         {

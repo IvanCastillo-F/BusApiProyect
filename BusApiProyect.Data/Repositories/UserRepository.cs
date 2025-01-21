@@ -42,5 +42,32 @@ namespace BusApiProyect.Data.Repositories
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<User> GetUsersByCredentialsAsyc(string email, string password)
+        {
+            // Retrieve the user with the provided email
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+            if (user == null)
+            {
+                // Return null if the user with the provided email does not exist
+                return null;
+            }
+
+            // Return the user if credentials are valid
+            return user;
+        }
+
+        public async Task<bool> IsEmailDuplicateAsync(string email)
+        {
+            return await _context.Users.AnyAsync(u => u.Email == email);
+        }
+
+        public async Task<bool> IsEmailDuplicateForOtherUserAsync(string email, int userId)
+        {
+            return await _context.Users.AnyAsync(u => u.Email == email && u.Id != userId);
+        }
+
+
     }
 }

@@ -2,6 +2,7 @@
 using BusApiProyect.Data.Interfaces;
 using BusApiProyect.Data.Models;
 using BusApiProyect.Data.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,7 @@ namespace BusApiProyect.Api.Controllers
             _logger = logger;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddBusSchedule(BusScheduleDTO scheduleDto)
         {
@@ -65,7 +67,7 @@ namespace BusApiProyect.Api.Controllers
             }
         }
 
-
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateBusSchedule(BusScheduleDTO scheduleDto)
         {
@@ -123,6 +125,7 @@ namespace BusApiProyect.Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBusSchedule(int id)
         {

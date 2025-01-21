@@ -24,6 +24,18 @@ namespace BusApiProyect.Api.Controllers
         {
             try
             {
+                // Check if the route already exists
+                var isDuplicate = await _routeRepository.IsRouteDuplicateAsync(route.Origin, route.Destination);
+                if (isDuplicate)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        message = "A route with the same origin and destination already exists."
+                    });
+                }
+
+                // Create the route if no duplicate is found
                 var createdRoute = await _routeRepository.CreateRouteAsync(route);
                 return CreatedAtAction(nameof(AddRoute), createdRoute);
             }
@@ -39,6 +51,7 @@ namespace BusApiProyect.Api.Controllers
         {
             try
             {
+                // Check if the route exists
                 var existingRoute = await _routeRepository.GetRouteByIdAsyc(routeToUpdate.Id);
                 if (existingRoute == null)
                 {
@@ -48,6 +61,20 @@ namespace BusApiProyect.Api.Controllers
                         message = "Record Not Found"
                     });
                 }
+
+                // Check if the new route details conflict with an existing route
+                var isDuplicate = await _routeRepository.IsRouteDuplicateForOtherRouteAsync(
+                    routeToUpdate.Origin, routeToUpdate.Destination, routeToUpdate.Id);
+                if (isDuplicate)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        message = "A route with the same origin and destination already exists."
+                    });
+                }
+
+                // Update the route details
                 existingRoute.Origin = routeToUpdate.Origin;
                 existingRoute.Origin_Latitude = routeToUpdate.Origin_Latitude;
                 existingRoute.Origin_Longitude = routeToUpdate.Origin_Longitude;
@@ -64,10 +91,11 @@ namespace BusApiProyect.Api.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     StatusCode = 500,
-                    message = "Record Not Found"
+                    message = "An unexpected error occurred."
                 });
             }
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRoute(int id)

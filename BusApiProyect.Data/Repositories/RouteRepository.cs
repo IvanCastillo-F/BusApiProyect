@@ -42,5 +42,15 @@ namespace BusApiProyect.Data.Repositories
             _context.Routes.Remove(route);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> IsRouteDuplicateAsync(string origin, string destination)
+        {
+            return await _context.Routes.AnyAsync(r => r.Origin == origin && r.Destination == destination);
+        }
+
+        public async Task<bool> IsRouteDuplicateForOtherRouteAsync(string origin, string destination, int routeId)
+        {
+            return await _context.Routes.AnyAsync(r => r.Origin == origin && r.Destination == destination && r.Id != routeId);
+        }
     }
 }

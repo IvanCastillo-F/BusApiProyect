@@ -43,5 +43,15 @@ namespace BusApiProyect.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> IsBusNumberDuplicateAsync(int busNumber)
+        {
+            return await _context.Buses.AnyAsync(b => b.BusNumber == busNumber);
+        }
+
+        public async Task<bool> IsBusNumberDuplicateForOtherBusAsync(int busNumber, int busId)
+        {
+            return await _context.Buses.AnyAsync(b => b.BusNumber == busNumber && b.Id != busId);
+        }
+
     }
 }

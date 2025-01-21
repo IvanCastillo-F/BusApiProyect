@@ -9,5 +9,7 @@ namespace BusApiProyect.Data.Interfaces
         Task<IEnumerable<Route>> GetAllRoutesAsyc();
         Task<Route> GetRouteByIdAsyc(int id);
         Task UpdateRouteAsync(Route route);
+        Task<bool> IsRouteDuplicateAsync(string origin, string destination);
+        Task<bool> IsRouteDuplicateForOtherRouteAsync(string origin, string destination, int routeId);
     }
 }

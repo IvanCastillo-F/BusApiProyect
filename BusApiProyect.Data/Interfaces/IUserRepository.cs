@@ -9,5 +9,9 @@ namespace BusApiProyect.Data.Interfaces
         Task<IEnumerable<User>> GetAllUsersAsyc();
         Task<User> GetUsersByIdAsyc(int id);
         Task UpdateUserAsync(User user);
+        Task<User> GetUsersByCredentialsAsyc(string email, string password);
+        Task<bool> IsEmailDuplicateAsync(string email);
+        Task<bool> IsEmailDuplicateForOtherUserAsync(string email, int userId);
+
     }
 }
