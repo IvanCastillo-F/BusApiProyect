@@ -11,5 +11,7 @@ namespace BusApiProyect.Data.Interfaces
         Task UpdateRouteAsync(Route route);
         Task<bool> IsRouteDuplicateAsync(string origin, string destination);
         Task<bool> IsRouteDuplicateForOtherRouteAsync(string origin, string destination, int routeId);
+        Task<double> GetDistance(Route route);
+        Task<IEnumerable<Route>> GetRoutesByOriginNameAsync(string originName);
     }
 }

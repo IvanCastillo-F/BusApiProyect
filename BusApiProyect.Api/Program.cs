@@ -49,6 +49,9 @@ builder.Services.AddTransient<IRouteRepository, RouteRepository>();
 //Add Bus Schedule Methods to the proyect
 builder.Services.AddTransient<IBusScheduleRepository, BusScheduleRepository>();
 
+//Add Booking Methods to the proyect
+builder.Services.AddTransient<IBookingRepository, BookingRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

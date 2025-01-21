@@ -1,6 +1,7 @@
 ﻿using BusApiProyect.Data.Interfaces;
 using BusApiProyect.Data.Models;
 using BusApiProyect.Data.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BusApiProyect.Api.Controllers
@@ -19,6 +20,7 @@ namespace BusApiProyect.Api.Controllers
             _logger = logger;
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddRoute(Data.Models.Route route)
         {
@@ -35,6 +37,9 @@ namespace BusApiProyect.Api.Controllers
                     });
                 }
 
+                double distance = await _routeRepository.GetDistance(route);
+                route.Distance = distance;
+
                 // Create the route if no duplicate is found
                 var createdRoute = await _routeRepository.CreateRouteAsync(route);
                 return CreatedAtAction(nameof(AddRoute), createdRoute);
@@ -46,6 +51,7 @@ namespace BusApiProyect.Api.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateRoute(Data.Models.Route routeToUpdate)
         {
@@ -170,5 +176,39 @@ namespace BusApiProyect.Api.Controllers
                 });
             }
         }
+
+        [HttpGet("ByOrigin/{originName}")]
+        public async Task<IActionResult> GetRoutesByOrigin(string originName)
+        {
+            try
+            {
+                // Fetch routes by origin name
+                var routes = await _routeRepository.GetRoutesByOriginNameAsync(originName);
+
+                if (routes == null || !routes.Any())
+                {
+                    return NotFound(new
+                    {
+                        StatusCode = 404,
+                        message = "No routes found for the specified origin."
+                    });
+                }
+
+                // Sort routes by distance (ascending)
+                var sortedRoutes = routes.OrderBy(r => r.Distance).ToList();
+
+                return Ok(sortedRoutes);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.Message);
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = 500,
+                    message = "An error occurred while retrieving the routes."
+                });
+            }
+        }
+
     }
 }
